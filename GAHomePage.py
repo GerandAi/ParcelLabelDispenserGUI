@@ -19,7 +19,7 @@ def dangerous_goods():
             check_no.enable()
         if check_no.value == 0:
             check_yes.enable()
-    window = Window(app, height=600, width=1024, bg="Grey")
+    window = Window(app, height=600, width=1024, bg=Grey)
     window.set_full_screen()
     title_box = Box(window, width="fill", height=50)
     title = Text(title_box, text="RMG DANGEROUS GOOD POLICY",
@@ -57,7 +57,7 @@ def packed_securely():
             check_no.enable()
         if check_no.value == 0:
             check_yes.enable()
-    window = Window(app, height=600, width=1024, bg="Grey")
+    window = Window(app, height=600, width=1024, bg=Grey)
     window.set_full_screen()
     title_box = Box(window, width="fill", height=90)
     title = Text(title_box, text="IS PARCEL TO BE SENT PACKAGED SECURELY?",
@@ -75,7 +75,7 @@ def packed_securely():
     confirm_button.bg="white"
     confirm_button.text_size=25
 def check_debris():
-    window = Window(app, height=600, width=1024, bg="Grey")
+    window = Window(app, height=600, width=1024, bg=Grey)
     window.set_full_screen()
     title_box = Box(window, width="fill", height=90)
     title = Text(title_box, text="Please remove Debris from Enclosure",
@@ -89,7 +89,7 @@ def check_debris():
         window.destroy()
         input_parcel()
 def input_parcel():
-    window = Window(app, height=600, width=1024, bg="Grey")
+    window = Window(app, height=600, width=1024, bg=Grey)
     window.set_full_screen()
     title_box = Box(window, width="fill", height=90)
     title = Text(title_box, text="Place Parcel in Enclosure & Close Enclosure Door",
@@ -109,7 +109,7 @@ def check_parcel():
             image.value="/home/pi/ga/buffer1.PNG"
         elif image.value == "/home/pi/ga/buffer1.PNG":
             image.value="/home/pi/ga/buffer0.PNG"
-    window = Window(app, height=600, width=1024, bg="Grey")
+    window = Window(app, height=600, width=1024, bg=Grey)
     window.set_full_screen()
     title_box = Box(window, width="fill", height=90)
     title = Text(title_box, text="Please wait while we perform checks on the parcel ; )",
@@ -123,7 +123,7 @@ def check_parcel():
         good_parcel()
     window.after(2000, next_step)
 def good_parcel():
-    window = Window(app, height=600, width=1024, bg="Grey")
+    window = Window(app, height=600, width=1024, bg=Grey)
     window.set_full_screen()
     correct_parcel = Text(window, text="                  We've done the checks!   ",
                           color="white", align="left", size=30)
@@ -134,7 +134,7 @@ def good_parcel():
         enclosure_photo()
     window.after(1000, next_step)
 def bad_parcel():
-    window = Window(app, height=600, width=1024, bg="Grey")
+    window = Window(app, height=600, width=1024, bg=Grey)
     window.set_full_screen()
     text_box = Box(window, width="fill", height=150)
     correct_parcel_line1 = Text(text_box, text="TO BE SENT THROUGH PARCEL POSTBOX",
@@ -150,7 +150,7 @@ def bad_parcel():
         window.destroy()
     window.after(5000, window_destroy)
 def enclosure_photo():
-    window = Window(app, height=600, width=1024, bg="Grey")
+    window = Window(app, height=600, width=1024, bg=Grey)
     window.set_full_screen()
     display_box = Box(window, align="left", width=550, height=380)
     image_box = Box(display_box, width=520, height=350, border=3)
@@ -194,7 +194,7 @@ def enclosure_photo():
     check_no = CheckBox(answer_box, align="right", command=prevent_conflict)
     no = Text(answer_box, text="No ", align="right", color="white", size=22)
 def entre_details():
-    window = Window(app, height=600, width=1024, bg="Grey")
+    window = Window(app, height=600, width=1024, bg=Grey)
     window.set_full_screen()
     
     top_space = Box(window, width="fill", height=10)
@@ -290,7 +290,7 @@ def entre_details():
     confirm_button.bg="white"
     confirm_button.text_size=25
 def payment_method():
-    window = Window(app, height=600, width=1024, bg="Grey")
+    window = Window(app, height=600, width=1024, bg=Grey)
     window.set_full_screen()
     text_box = Box(window, align="left", width="fill", height=50)
     present_payment = Text(text_box, text="PLEASE PRESENT PAYMENT METHOD",
@@ -300,7 +300,7 @@ def payment_method():
         close_door()
     window.after(2000, next_step)
 def close_door():
-    window = Window(app, height=600, width=1024, bg="Grey")
+    window = Window(app, height=600, width=1024, bg=Grey)
     window.set_full_screen()
     text_box = Box(window, align="left", width="fill", height=90)
     take_label = Text(text_box, text="PLEASE TAKE DISPENSED LABEL",
@@ -313,7 +313,7 @@ def close_door():
     window.after(3000, next_step)
 def final_page():
     # Gerand Ai cc.2022
-    window = Window(app, height=600, width=1024, bg="Grey")
+    window = Window(app, height=600, width=1024, bg=Grey)
     window.set_full_screen()
     text_box = Box(window, align="left", width="fill", height=50)
     credit = Text(text_box, text="THANK YOU!",
@@ -321,8 +321,8 @@ def final_page():
     def next_step():
         app.destroy()
     window.after(2000, next_step)
-
-app = App(height=600, width=1024, bg="Grey")
+Grey=(127, 127, 127)
+app = App(height=600, width=1024, bg=Grey)
 app.set_full_screen()
 title_box = Box(app, width="fill", height=70)
 title = Text(title_box, text="WELCOME TO PARCEL LABEL DISPENSER",
