@@ -68,7 +68,7 @@ def packed_securely():
             if initial_weight == 0:
                 window.destroy()
                 input_parcel()
-            elif initial_weight == 1:
+            elif initial_weight == 1 :
                 window.destroy()
                 check_debris()
             elif initial_weight == -1:
@@ -100,6 +100,8 @@ def packed_securely():
     confirm_button.bg="white"
     confirm_button.text_size=25
     confirm_button.disable()
+
+hall_in_use = False
 def check_debris():
     fp.servo_unlock()
     window = Window(app, height=600, width=1024, bg=Grey)
@@ -113,10 +115,10 @@ def check_debris():
         fp.initiate_weight_check()
         title.value = "Please wait while we check if debris is cleared"
         def change_colour():
-            if title.color == "white":
-                title.color = "red"
-            elif title.color == "red":
-                title.color = "white"
+            if title.text_color == "white":
+                title.text_color = "red"
+            elif title.text_color == "red":
+                title.text_color = "white"
         window.repeat(500, change_colour)
         def get_debris_status():
             debris = fp.return_initial_weight()
@@ -124,17 +126,20 @@ def check_debris():
                 window.destroy()
                 input_parcel()
             elif debris == 1:
-                fp.initiate_hall_sensor()
-                title.value = "Please close the door..."
-                def fall_back():
-                    door_shut = fp.return_door_shut()
-                    if door_shut == 1:
-                        fp.servo_lock()
-                        logo.show()
-                        window.destroy()
-                window.repeat(200, fall_back)
-        window.repeat(100, get_debris_status)
-    confirm_button = PushButton(button_box, text="CLEARED", align="right",
+                global hall_in_use
+                if hall_in_use is False:
+                    fp.initiate_hall_sensor()
+                    hall_in_use = True
+                    title.value = "Please close the door..."
+                    def fall_back():
+                        door_shut = fp.return_door_shut()
+                        if door_shut == 1:
+                            fp.servo_lock()
+                            logo.show()
+                            window.destroy()
+                    window.repeat(200, fall_back)
+        window.repeat(200, get_debris_status)
+    confirm_button = PushButton(window, text="CLEARED", align="right",
                                 height=1, width=8, command=next_step)
     confirm_button.bg="white"
     confirm_button.text_size=25
