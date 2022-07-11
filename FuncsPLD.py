@@ -16,27 +16,30 @@ class servoUnlock(Thread):
         '''Start your thread here'''
         ser1 = serial.Serial('/dev/ttyACM0', 115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=4)                 
         time.sleep(2)
-        ser1.write(b"Servo\n")
+        ser1.write(b"Servou\n")
         pass
 def servo_unlock():
     thread = servoUnlock()
     thread.daemon = True
     thread.start()
 
+ser = serial.Serial('/dev/ttyACM0', 115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=3)
 class initialWeightCheck(Thread):
     def __init__(self):
         Thread.__init__(self)
         self.initial_weight = -1
     def run(self):
-        ser2 = serial.Serial('/dev/ttyACM0', 115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=3)                 
-        time.sleep(1.5)
-        ser2.write(b"Weight\n")
-        ser2.reset_input_buffer()
-        ser2.flush()
+        #ser = serial.Serial('/dev/ttyACM0', 115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=3)                 
+        #time.sleep(1.5)
+        ser.write(b"Weight\n")
+        ser.reset_input_buffer()
+        ser.flush()
         while True:
-            line2 = ser2.readline().decode('utf-8').rstrip()
+            line2 = ser.readline().decode('utf-8').rstrip()
+            #print(line2)
             if line2 != "":
-                if float(line2) == 0:
+                print(float(line2))
+                if float(line2) < 0.02:
                     self.initial_weight = 0
                 else:
                     self.initial_weight = 1
@@ -55,17 +58,18 @@ class hallSensorCheck(Thread):
         Thread.__init__(self)
         self.door_shut = -1
     def run(self):
-        ser3 = serial.Serial('/dev/ttyACM0', 115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=3)                 
-        time.sleep(1.5)
-        ser3.write(b"Hall\n")
-        time.sleep(0.5)
-        ser3.reset_input_buffer()
-        ser3.flush()
-        time.sleep(0.2)
+        #ser = serial.Serial('/dev/ttyACM0', 115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=3)                 
+        #time.sleep(1.5)
+        ser.write(b"Hall\n")
+        #time.sleep(0.5)
+        ser.reset_input_buffer()
+        ser.flush()
+        #time.sleep(0.2)
         while True:
-            line3 = ser3.readline().decode('utf-8').rstrip()
+            line3 = ser.readline().decode('utf-8').rstrip()
             if line3 != "":
-                if float(line3) >= 520:
+                print(float(line3))
+                if float(line3) <= 300.0:
                     self.door_shut = 1
                 else:
                     self.door_shut = 0
@@ -78,7 +82,6 @@ def initiate_hall_sensor():
     thread0.start()
 def return_door_shut():
     return thread0.door_shut
-
 
 class parcelCheck(Thread):
     def __init__(self):
@@ -95,9 +98,10 @@ class parcelCheck(Thread):
         while True:
             line4 = ser4.readline().decode('utf-8').rstrip()
             if line4 != "":
-                OD1 = 450 - float(line4)
+                OD1 = float(line4)
+                #print(OD1)
                 break
-        if OD1 > 350:
+        if OD1 > 157:
             verifier1 = False
         else:
             verifier1 = True
@@ -110,7 +114,7 @@ class parcelCheck(Thread):
         ser5.flush()
         time.sleep(0.2)
         line5 = ser5.readline().decode('utf-8').rstrip()
-        OD2 = 350 - float(line5)
+        OD2 = float(line5)
         if OD2 > 250:
             verifier2 = False
         else:
@@ -124,8 +128,8 @@ class parcelCheck(Thread):
         ser6.flush()
         time.sleep(0.2)
         line6 = ser6.readline().decode('utf-8').rstrip()
-        OD3 = 160 - float(line6)
-        if OD3 > 157:
+        OD3 = float(line6)
+        if OD3 > 350:
             verifier3 = False
         else:
             verifier3 = True
@@ -169,7 +173,7 @@ class servoLock(Thread):
     def run(self):
         ser8 = serial.Serial('/dev/ttyACM0', 115200, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=4)                 
         time.sleep(2)
-        ser8.write(b"Servo\n")
+        ser8.write(b"Servol\n")
 def servo_lock():
     thread = servoLock()
     thread.daemon = True
@@ -225,7 +229,7 @@ def label_creation(name,line,code,town,Class):
             self.cell(80,8,'Postage paid GB',align='R')
             self.set_y(12)
             self.set_x(15)
-            self.set_font('Arial','B',26)
+            self.set_font('Arial','B',20)
             self.cell(40,20,Class,border=0,align='C')   
             self.ln(2)
         def footer(self):

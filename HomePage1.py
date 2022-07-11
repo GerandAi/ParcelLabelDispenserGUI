@@ -153,17 +153,19 @@ def input_parcel():
     image_box = Box(window, width="fill", height=390)
     image = Picture(image_box, image="input_parcel.PNG", align="bottom",
                     width=900, height=320)
-    def check_door_shut():
-        fp.initiate_hall_sensor()
-        def next_step():
-            door_shut = fp.return_door_shut()
-            if door_shut == 1:
-                fp.servo_lock()
-                window.destroy()
-                check_parcel()
-        window.repeat(200, next_step)
-    check_door_shut()
-    window.repeat(6000, check_door_shut)
+    def delay():
+        def check_door_shut():
+            fp.initiate_hall_sensor()
+            def next_step():
+                door_shut = fp.return_door_shut()
+                if door_shut == 1:
+                    fp.servo_lock()
+                    window.destroy()
+                    check_parcel()
+            window.repeat(200, next_step)
+        #check_door_shut()
+        window.repeat(5000, check_door_shut)
+    window.after(5000, delay)
 def check_parcel():
     fp.initiate_parcel_check()
     def change_image():
@@ -210,8 +212,10 @@ def bad_parcel():
     image = Picture(window, image="bad_parcel.PNG", height=520, width=650)
     def window_destroy():
         window.destroy()
+        global print_label
+        print_label = False
         close_door()
-    window.after(5000, window_destroy)
+    window.after(10000, window_destroy)
 service = "str"
 receiver = "str"
 road = "str"
@@ -330,20 +334,23 @@ def close_door():
     text_box = Box(window, align="left", width="fill", height=90)
     close = Text(text_box, text="Please take your parcel and close door...",
                            color="white", size=30)
-    def next_step():
-        fp.initiate_hall_sensor()
-        def next_page():
-            door_shut = fp.return_door_shut()
-            if door_shut == 1:
-                if print_label is True:
-                    window.destroy()
-                    take_label()
-                elif print_label is False:
-                    logo.show()
-                    window.destroy()
-        window.repeat(200, next_page)
-    next_step()
-    window.repeat(6000, next_step)
+    def delay():
+        def next_step():
+            fp.initiate_hall_sensor()
+            def next_page():
+                door_shut = fp.return_door_shut()
+                if door_shut == 1:
+                    if print_label is True:
+                        window.destroy()
+                        take_label()
+                    elif print_label is False:
+                        logo.show()
+                        window.destroy()
+                    fp.servo_lock()
+            window.repeat(200, next_page)
+        #next_step()
+        window.repeat(5000, next_step)
+    window.after(5000, delay)
 def take_label():
     fp.label_creation(receiver,road,postcode,city,service)
     window = Window(app, height=600, width=1024, bg=Grey)
