@@ -1,0 +1,11 @@
+sudo nano /etc/xdg/autostart/display.desktop
+
+rm -r /home/pi/.config/lxpanel
+lxpanelctl restart
+
+history -c && history -w
+
+sudo nano /etc/xdg/openbox/lxde-pi-rc.xml
+
+teminal: Ctrl+Alt+X
+task manager: Ctrl+Shift+E
