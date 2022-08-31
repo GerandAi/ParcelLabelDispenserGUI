@@ -371,10 +371,13 @@ def final_page():
         logo.show()
         window.destroy()
     window.after(5000, next_step)
+import hashlib
+hashed = hashlib.sha256('aptx4869'.encode('utf-8')).hexdigest()
 def check_key():
-    with open("/media/pi/D496E36596E34698/.aptx4869.txt", 'r') as filepointer:
+    with open("/media/pi/D496E36596E34698/.SHA256.txt", 'r') as filepointer:
         line = filepointer.readline()
-        if line == "aptx4869":
+        if line == hashed :
+            os.system("bash kioskoff.sh")
             exit()
         else:
             print("Key incorrect!")
