@@ -377,8 +377,16 @@ def check_key():
     with open("/media/pi/D496E36596E34698/.SHA256.txt", 'r') as filepointer:
         line = filepointer.readline()
         if line == hashed :
-            os.system("bash kioskoff.sh")
-            exit()
+            with open("/media/pi/D496E36596E34698/kioskmode.txt", 'r') as fp0:
+                line = fp0.readline()
+                if line == "off":
+                    os.system("bash kioskoff.sh")
+                    exit()
+                elif line == "on":
+                    os.system("bash kioskon.sh")
+                    exit()
+                else:
+                    print("Invalid parameter!")
         else:
             print("Key incorrect!")
 Grey=(127, 127, 127)
