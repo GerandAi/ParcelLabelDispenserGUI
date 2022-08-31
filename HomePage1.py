@@ -44,7 +44,7 @@ def dangerous_goods():
                            height=1, width=8, command=no_pressed)
     no_button.bg="white"
     no_button.text_size=25
-    button_box = Box(window, width=1000, height=50)
+    button_box = Box(window, width=1000, height=60)
     confirm_button = PushButton(button_box, text="CONFIRM", align="right",
                                 height=2, width=8, command=next_page)
     confirm_button.bg="white"
@@ -100,8 +100,7 @@ def packed_securely():
     confirm_button.bg="white"
     confirm_button.text_size=25
     confirm_button.disable()
-
-hall_in_use = False
+clear_pressed = False
 def check_debris():
     fp.servo_unlock()
     window = Window(app, height=600, width=1024, bg=Grey)
@@ -114,30 +113,22 @@ def check_debris():
     def next_step():
         fp.initiate_weight_check()
         title.value = "Please wait while we check if debris is cleared"
-        def change_colour():
-            if title.text_color == "white":
-                title.text_color = "red"
-            elif title.text_color == "red":
-                title.text_color = "white"
-        window.repeat(500, change_colour)
+        global clear_pressed
+        if clear_pressed is False:
+            def change_colour():
+                if title.text_color == "white":
+                    title.text_color = "red"
+                elif title.text_color == "red":
+                    title.text_color = "white"
+            window.repeat(500, change_colour)
+            clear_pressed = True
         def get_debris_status():
             debris = fp.return_initial_weight()
             if debris == 0:
                 window.destroy()
                 input_parcel()
-            elif debris == 1:
-                global hall_in_use
-                if hall_in_use is False:
-                    fp.initiate_hall_sensor()
-                    hall_in_use = True
-                    title.value = "Please close the door..."
-                    def fall_back():
-                        door_shut = fp.return_door_shut()
-                        if door_shut == 1:
-                            fp.servo_lock()
-                            logo.show()
-                            window.destroy()
-                    window.repeat(200, fall_back)
+                global clear_pressed
+                clear_pressed = False
         window.repeat(200, get_debris_status)
     confirm_button = PushButton(window, text="CLEARED", align="right",
                                 height=1, width=8, command=next_step)
@@ -331,10 +322,12 @@ def payment_method():
 def close_door():
     window = Window(app, height=600, width=1024, bg=Grey)
     window.set_full_screen("None")
-    text_box = Box(window, align="left", width="fill", height=90)
+    text_box = Box(window, width="fill", height=300)
     close = Text(text_box, text="Please take your parcel and close door...",
-                           color="white", size=30)
+                           color="white", size=30, align="bottom")
     def delay():
+        close.value = "Please wait while we check if door is closed"
+        confirm_button.disable()
         def next_step():
             fp.initiate_hall_sensor()
             def next_page():
@@ -350,7 +343,12 @@ def close_door():
             window.repeat(200, next_page)
         #next_step()
         window.repeat(5000, next_step)
-    window.after(5000, delay)
+    #window.after(5000, delay)
+    button_box = Box(window, width=1000, height=100, align="bottom")
+    confirm_button = PushButton(button_box, text="CLEARED", align="right",
+                                height=1, width=8, command=delay)
+    confirm_button.bg="white"
+    confirm_button.text_size=25
 def take_label():
     fp.label_creation(receiver,road,postcode,city,service)
     window = Window(app, height=600, width=1024, bg=Grey)
@@ -373,6 +371,13 @@ def final_page():
         logo.show()
         window.destroy()
     window.after(5000, next_step)
+def check_key():
+    with open("/media/pi/D496E36596E34698/.aptx4869.txt", 'r') as filepointer:
+        line = filepointer.readline()
+        if line == "aptx4869":
+            exit()
+        else:
+            print("Key incorrect!")
 Grey=(127, 127, 127)
 app = App(height=600, width=1024, bg=Grey)
 app.set_full_screen("None")
@@ -387,4 +392,5 @@ begin_button.text_size=30
 logo_box = Box(app, align="bottom", width="fill")
 logo = Picture(logo_box, image="logo.png", align="right",
                width=290, height=190)
+app.repeat(1000, check_key)
 app.display()
